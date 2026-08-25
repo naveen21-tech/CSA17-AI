@@ -1,0 +1,30 @@
+def minimax(depth, node_index, maximizing_player, values, target_depth):
+    # Base case
+    if depth == target_depth:
+        return values[node_index]
+
+    if maximizing_player:
+        return max(
+            minimax(depth + 1, node_index * 2, False, values, target_depth),
+            minimax(depth + 1, node_index * 2 + 1, False, values, target_depth)
+        )
+    else:
+        return min(
+            minimax(depth + 1, node_index * 2, True, values, target_depth),
+            minimax(depth + 1, node_index * 2 + 1, True, values, target_depth)
+        )
+
+
+# Leaf node values
+values = [3, 5, 2, 9, 12, 5, 23, 23]
+
+target_depth = 3
+
+result = minimax(0, 0, True, values, target_depth)
+
+print("Optimal value:", result)
+
+
+Output:
+
+Optimal value: 12
