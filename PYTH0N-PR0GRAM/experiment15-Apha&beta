@@ -1,0 +1,165 @@
+# Tic-Tac-Toe using Alpha-Beta Pruning
+
+board = [' ' for _ in range(9)]
+
+
+def display_board():
+    print()
+    print(board[0], '|', board[1], '|', board[2])
+    print('--+---+--')
+    print(board[3], '|', board[4], '|', board[5])
+    print('--+---+--')
+    print(board[6], '|', board[7], '|', board[8])
+    print()
+
+
+def check_winner(player):
+    wins = [
+        (0, 1, 2), (3, 4, 5), (6, 7, 8),
+        (0, 3, 6), (1, 4, 7), (2, 5, 8),
+        (0, 4, 8), (2, 4, 6)
+    ]
+
+    for a, b, c in wins:
+        if board[a] == board[b] == board[c] == player:
+            return True
+
+    return False
+
+
+def is_draw():
+    return ' ' not in board
+
+
+# Alpha-Beta Pruning
+def alpha_beta(depth, alpha, beta, maximizing):
+    if check_winner('O'):
+        return 10 - depth
+
+    if check_winner('X'):
+        return depth - 10
+
+    if is_draw():
+        return 0
+
+    if maximizing:
+        max_eval = -1000
+
+        for i in range(9):
+            if board[i] == ' ':
+                board[i] = 'O'
+
+                evaluation = alpha_beta(
+                    depth + 1, alpha, beta, False
+                )
+
+                board[i] = ' '
+
+                max_eval = max(max_eval, evaluation)
+                alpha = max(alpha, evaluation)
+
+                # Beta cut-off
+                if beta <= alpha:
+                    break
+
+        return max_eval
+
+    else:
+        min_eval = 1000
+
+        for i in range(9):
+            if board[i] == ' ':
+                board[i] = 'X'
+
+                evaluation = alpha_beta(
+                    depth + 1, alpha, beta, True
+                )
+
+                board[i] = ' '
+
+                min_eval = min(min_eval, evaluation)
+                beta = min(beta, evaluation)
+
+                # Alpha cut-off
+                if beta <= alpha:
+                    break
+
+        return min_eval
+
+
+# Find the best move for computer
+def best_move():
+    best_value = -1000
+    move = -1
+
+    for i in range(9):
+        if board[i] == ' ':
+            board[i] = 'O'
+
+            value = alpha_beta(
+                0, -1000, 1000, False
+            )
+
+            board[i] = ' '
+
+            if value > best_value:
+                best_value = value
+                move = i
+
+    return move
+
+
+# Main game
+print("TIC-TAC-TOE USING ALPHA-BETA PRUNING")
+print("You are X")
+print("Computer is O")
+
+while True:
+
+    display_board()
+
+    # Player move
+    try:
+        position = int(input("Enter your position (0-8): "))
+
+        if position < 0 or position > 8:
+            print("Enter a number between 0 and 8.")
+            continue
+
+        if board[position] != ' ':
+            print("Position already occupied!")
+            continue
+
+        board[position] = 'X'
+
+    except ValueError:
+        print("Invalid input!")
+        continue
+
+    # Check player win
+    if check_winner('X'):
+        display_board()
+        print("You win!")
+        break
+
+    if is_draw():
+        display_board()
+        print("Game Draw!")
+        break
+
+    # Computer move
+    move = best_move()
+    board[move] = 'O'
+
+    print("Computer chooses position:", move)
+
+    # Check computer win
+    if check_winner('O'):
+        display_board()
+        print("Computer wins!")
+        break
+
+    if is_draw():
+        display_board()
+        print("Game Draw!")
+        break
