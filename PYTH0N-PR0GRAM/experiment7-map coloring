@@ -1,0 +1,51 @@
+# Map Coloring using Constraint Satisfaction Problem (CSP)
+states = ['A', 'B', 'C', 'D', 'E']
+
+colors = ['Red', 'Green', 'Blue']
+
+neighbors = {
+    'A': ['B', 'C'],
+    'B': ['A', 'C', 'D'],
+    'C': ['A', 'B', 'D', 'E'],
+    'D': ['B', 'C', 'E'],
+    'E': ['C', 'D']
+}
+
+def is_valid(state, color, assignment):
+    for neighbor in neighbors[state]:
+        if neighbor in assignment and assignment[neighbor] == color:
+            return False
+    return True
+
+def map_coloring(assignment):
+    # If all states are colored
+    if len(assignment) == len(states):
+        return assignment
+
+    for state in states:
+        if state not in assignment:
+            break
+
+    for color in colors:
+        if is_valid(state, color, assignment):
+            assignment[state] = color
+
+            result = map_coloring(assignment)
+
+            if result:
+                return result
+
+            # Backtrack
+            del assignment[state]
+
+    return None
+
+
+solution = map_coloring({})
+
+if solution:
+    print("Map Coloring Solution:")
+    for state in states:
+        print(state, "->", solution[state])
+else:
+    print("No solution exists.")
