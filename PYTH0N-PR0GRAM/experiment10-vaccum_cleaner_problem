@@ -1,0 +1,41 @@
+# Vacuum Cleaner Problem
+
+def vacuum_cleaner():
+    # Initial state
+    rooms = {
+        'A': 'Dirty',
+        'B': 'Dirty'
+    }
+
+    # Starting position of vacuum cleaner
+    position = 'A'
+
+    print("Initial State:")
+    print(rooms)
+
+    # Continue until all rooms are clean
+    while 'Dirty' in rooms.values():
+
+        print("\nVacuum is in room", position)
+
+        # Clean the current room
+        if rooms[position] == 'Dirty':
+            print("Room", position, "is Dirty")
+            print("Action: Suck")
+            rooms[position] = 'Clean'
+
+        # Move to the other room
+        if position == 'A':
+            position = 'B'
+        else:
+            position = 'A'
+
+        print("Action: Move")
+
+    print("\nFinal State:")
+    print(rooms)
+    print("All rooms are clean!")
+
+
+# Run the program
+vacuum_cleaner()
