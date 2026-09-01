@@ -1,0 +1,65 @@
+import heapq
+
+# Graph with edge costs
+graph = {
+    'A': {'B': 1, 'C': 4},
+    'B': {'A': 1, 'C': 2, 'D': 5},
+    'C': {'A': 4, 'B': 2, 'D': 1},
+    'D': {'B': 5, 'C': 1, 'E': 3},
+    'E': {'D': 3}
+}
+
+# Heuristic values (estimated distance to goal E)
+heuristic = {
+    'A': 7,
+    'B': 6,
+    'C': 2,
+    'D': 1,
+    'E': 0
+}
+
+
+def a_star(start, goal):
+    # Priority queue: (f, g, node, path)
+    queue = [(heuristic[start], 0, start, [start])]
+
+    visited = set()
+
+    while queue:
+        f, g, current, path = heapq.heappop(queue)
+
+        if current in visited:
+            continue
+
+        visited.add(current)
+
+        # Goal reached
+        if current == goal:
+            return path, g
+
+        # Explore neighbours
+        for neighbor, cost in graph[current].items():
+
+            if neighbor not in visited:
+                new_g = g + cost
+                new_f = new_g + heuristic[neighbor]
+
+                heapq.heappush(
+                    queue,
+                    (new_f, new_g, neighbor, path + [neighbor])
+                )
+
+    return None, None
+
+
+# Start and goal
+start = 'A'
+goal = 'E'
+
+path, cost = a_star(start, goal)
+
+if path:
+    print("Shortest Path:", " -> ".join(path))
+    print("Total Cost:", cost)
+else:
+    print("Path not found")
